@@ -8,11 +8,9 @@ import platform
 import subprocess
 import time
 from collections.abc import Sequence
-from pathlib import Path
 
 import pandas as pd
 import torch
-from matplotlib.figure import Figure
 from torch import nn
 from torch.utils.data import DataLoader
 
@@ -116,30 +114,3 @@ def resumir_tempos(medidas: list[dict[str, float | int]]) -> pd.DataFrame:
         .reset_index()
     )
     return resumo
-
-
-def grafico_tempos(medidas: list[dict[str, float | int]], hardware: dict[str, str], caminho: Path) -> Figure:
-    """Gráfico tempo por época × tamanho do lote (pontos = repetições, linha = mediana)."""
-    df = pd.DataFrame(medidas)
-    resumo = resumir_tempos(medidas)
-    fig = Figure(figsize=(11, 4.2), constrained_layout=True)
-    eixo_a, eixo_b = fig.subplots(1, 2)
-    eixo_a.scatter(df["batch_size"], df["segundos"], color="tab:gray", alpha=0.6, label="repetições")
-    eixo_a.plot(resumo["batch_size"], resumo["mediana_segundos"], marker="o", color="tab:blue", label="mediana")
-    eixo_a.set_xscale("log", base=2)
-    eixo_a.set_yscale("log")
-    eixo_a.set_xlabel("tamanho do lote (observações por passo)")
-    eixo_a.set_ylabel("tempo de uma época (s)")
-    eixo_a.set_title("Tempo por época")
-    eixo_a.legend()
-    eixo_b.plot(resumo["batch_size"], resumo["mediana_segundos_por_passo"] * 1000, marker="o", color="tab:orange")
-    eixo_b.set_xscale("log", base=2)
-    eixo_b.set_yscale("log")
-    eixo_b.set_xlabel("tamanho do lote (observações por passo)")
-    eixo_b.set_ylabel("tempo por passo (ms, mediana)")
-    eixo_b.set_title("Custo de um passo")
-    fig.suptitle(
-        f"A3: época completa de treino na CPU ({hardware['cpu']}, {hardware['threads_torch']} threads, torch {hardware['torch']})"
-    )
-    fig.savefig(caminho, dpi=130)
-    return fig

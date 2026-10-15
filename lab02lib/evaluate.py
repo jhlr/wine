@@ -1,11 +1,8 @@
 """D1-D3: avaliação final no teste, baseline trivial e curvas ROC e PR."""
 from __future__ import annotations
 
-from pathlib import Path
-
 import numpy as np
 import pandas as pd
-from matplotlib.figure import Figure
 from sklearn.metrics import (
     accuracy_score,
     auc,
@@ -16,7 +13,6 @@ from sklearn.metrics import (
     precision_score,
     recall_score,
     roc_auc_score,
-    roc_curve,
 )
 from torch import Tensor, nn
 from torch.utils.data import DataLoader
@@ -114,44 +110,3 @@ def avaliar_teste(
             for pred in (0, 1):
                 matrizes.append({"regra": regra, "real": real, "previsto": pred, "contagem": int(matriz[real, pred])})
     return pd.DataFrame(linhas), pd.DataFrame(matrizes), areas
-
-
-def matriz_rotulada(matrizes: pd.DataFrame, regra: str) -> pd.DataFrame:
-    """Matriz de confusão com linhas = real e colunas = previsto, na ordem 0 e 1."""
-    sub = matrizes[matrizes["regra"] == regra].pivot(index="real", columns="previsto", values="contagem")
-    sub.index = pd.Index(["real 0 (nota < 7)", "real 1 (nota >= 7)"], name="regra: " + regra)
-    sub.columns = pd.Index(["previsto 0", "previsto 1"])
-    return sub
-
-
-def grafico_roc_pr(
-    rotulos: np.ndarray, escores: np.ndarray, limiar: float, areas: dict[str, float], caminho: Path
-) -> Figure:
-    """ROC (com a diagonal aleatória) e PR (com a linha da prevalência do teste), lado a lado."""
-    fpr, tpr, _ = roc_curve(rotulos, escores)
-    precisao, revocacao, _ = precision_recall_curve(rotulos, escores)
-    fig = Figure(figsize=(11, 4.8), constrained_layout=True)
-    eixo_roc, eixo_pr = fig.subplots(1, 2)
-    eixo_roc.plot(fpr, tpr, color="tab:blue", label=f"rede (AUC-ROC = {areas['auc_roc']:.3f})")
-    eixo_roc.plot([0, 1], [0, 1], linestyle="--", color="tab:gray", label="aleatório (diagonal, área 0,5)")
-    eixo_pr.plot(revocacao, precisao, color="tab:blue", label=f"rede (AUC-PR trapezoidal = {areas['auc_pr']:.3f}; AP = {areas['ap']:.3f})")
-    eixo_pr.axhline(areas["prevalencia_teste"], linestyle="--", color="tab:gray", label=f"prevalência do teste ({areas['prevalencia_teste']:.3f})")
-    for nome, t, cor, marca in (("limiar 0,5", 0.5, "tab:red", "o"), (f"limiar escolhido ({limiar:.3f})", limiar, "tab:green", "s")):
-        previsto = prever(escores, t)
-        pos = rotulos == 1
-        tpr_t = float(previsto[pos].mean())
-        fpr_t = float(previsto[~pos].mean())
-        eixo_roc.scatter([fpr_t], [tpr_t], color=cor, marker=marca, zorder=3, label=nome)
-        prec_t = float(rotulos[previsto == 1].mean()) if previsto.any() else 0.0
-        eixo_pr.scatter([tpr_t], [prec_t], color=cor, marker=marca, zorder=3, label=nome)
-    eixo_roc.set_xlabel("taxa de falsos positivos")
-    eixo_roc.set_ylabel("taxa de verdadeiros positivos (revocação)")
-    eixo_roc.set_title("D3: curva ROC no teste")
-    eixo_roc.legend(loc="lower right")
-    eixo_pr.set_xlabel("revocação")
-    eixo_pr.set_ylabel("precisão")
-    eixo_pr.set_title("D3: curva precisão-revocação no teste")
-    eixo_pr.set_ylim(0, 1.02)
-    eixo_pr.legend(loc="lower left", bbox_to_anchor=(0.0, 0.17))
-    fig.savefig(caminho, dpi=130)
-    return fig

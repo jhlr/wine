@@ -1,6 +1,7 @@
 """A4: o erro do BatchNorm com último lote de uma observação e a correção."""
 from __future__ import annotations
 
+from dataclasses import dataclass
 from pathlib import Path
 
 import numpy as np
@@ -12,6 +13,18 @@ from apoio import criar_modelo, fixar_semente, treinar_epoca
 from lab02lib.data import MeuDataset
 
 MENSAGEM_ESPERADA = "Expected more than 1 value per channel"
+
+
+@dataclass
+class ResultadoBatchNorm:
+    """O que a demonstração observou (o log em texto vai à parte para ``a4_log.txt``)."""
+
+    log: list[str]
+    n_linhas: int
+    batch_size: int
+    tamanhos_sem_correcao: list[int]
+    ids: list[int]
+    descartadas: list[int]
 
 
 class _ComIdLinha(Dataset[tuple[Tensor, Tensor, int]]):
@@ -36,13 +49,13 @@ def demonstrar_batchnorm(
     n_subconjunto: int = 65,
     batch_size: int = 64,
     epocas_corrigidas: int = 3,
-) -> list[str]:
+) -> ResultadoBatchNorm:
     """Reproduz o erro de BatchNorm com 65 linhas do treino e lote 64, e mostra a correção.
 
     Só a linha sobre ``ValueError`` com a mensagem esperada é capturada; qualquer
     outro erro sobe normalmente. O modelo que falhou fica contaminado (já deu um
     passo), então a versão corrigida usa um modelo novo, com a mesma semente.
-    Devolve as linhas do log (também salvas em ``caminho_log``).
+    Devolve o log (também salvo em ``caminho_log``) e o que foi observado, para o gráfico.
     """
     log: list[str] = []
 
@@ -112,5 +125,12 @@ def demonstrar_batchnorm(
         dizer(f"Época {epoca}: perda de treino {perda:.4f}; linhas vistas: {len(vistas)}; linha descartada: id_linha={faltou[0]}.")
     dizer(f"Linhas descartadas nas {epocas_corrigidas} épocas: {descartadas} (mudam entre épocas: {len(set(descartadas)) > 1}).")
     caminho_log.write_text("\n".join(log) + "\n", encoding="utf-8")
-    return log
+    return ResultadoBatchNorm(
+        log=log,
+        n_linhas=n_subconjunto,
+        batch_size=batch_size,
+        tamanhos_sem_correcao=tamanhos_vistos,
+        ids=[int(i) for i in ids],
+        descartadas=descartadas,
+    )
 

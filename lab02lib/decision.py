@@ -8,7 +8,6 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from matplotlib.figure import Figure
 from sklearn.calibration import calibration_curve
 from sklearn.metrics import brier_score_loss
 from torch import nn
@@ -99,44 +98,21 @@ def comparar_regras(
     return pd.DataFrame(linhas)
 
 
-def grafico_custo(busca: BuscaLimiar, formula: float, caminho: Path) -> Figure:
-    """Custo total na validação em função do limiar (degraus), com escolhido, 0,5 e fórmula marcados."""
-    t = busca.tabela
-    fig = Figure(figsize=(8, 4.5), constrained_layout=True)
-    eixo = fig.subplots()
-    eixo.step(t["limiar"], t["custo_total"], where="post", color="tab:blue")
-    eixo.axvline(busca.limiar, color="tab:green", linestyle="--", label=f"escolhido ({busca.limiar:.4f})")
-    eixo.axvline(0.5, color="tab:gray", linestyle=":", label="0,5")
-    eixo.axvline(formula, color="tab:red", linestyle="-.", label=f"fórmula ({formula:.4f})")
-    eixo.set_xlabel("limiar (escore >= limiar prevê positivo)")
-    eixo.set_ylabel("custo total na validação (pontos de esforço)")
-    eixo.set_title("D5: custo na validação por limiar")
-    eixo.legend()
-    fig.savefig(caminho, dpi=130)
-    return fig
-
-
-def calibracao(
-    rotulos: np.ndarray, escores: np.ndarray, caminho: Path, n_bins: int = 5
-) -> tuple[pd.DataFrame, float, Figure]:
-    """Tabela do diagrama de calibração (bins por quantis), Brier score e a figura.
+def calibracao(rotulos: np.ndarray, escores: np.ndarray, n_bins: int = 5) -> tuple[pd.DataFrame, float, np.ndarray]:
+    """Tabela do diagrama de calibração (bins por quantis), Brier score e observações por bin.
 
     Com poucas dezenas de positivos na validação, poucos bins (5) mantêm alguns
-    positivos em cada um; mais bins deixariam proporções instáveis.
+    positivos em cada um; mais bins deixariam proporções instáveis. As contagens
+    repetem a regra de bins por quantis de ``calibration_curve``.
     """
     freq_real, media_prevista = calibration_curve(rotulos, escores, n_bins=n_bins, strategy="quantile")
     brier = float(brier_score_loss(rotulos, escores))
+    limites = np.percentile(escores, np.linspace(0.0, 1.0, n_bins + 1) * 100)
+    por_bin = np.bincount(np.searchsorted(limites[1:-1], escores), minlength=n_bins)
+    por_bin = por_bin[por_bin > 0]
+    assert len(por_bin) == len(freq_real) and int(por_bin.sum()) == len(escores), "contagem por bin inconsistente"
     tabela = pd.DataFrame({"bin": np.arange(1, len(freq_real) + 1), "escore_medio": media_prevista, "fracao_positivos": freq_real})
-    fig = Figure(figsize=(5.5, 5), constrained_layout=True)
-    eixo = fig.subplots()
-    eixo.plot([0, 1], [0, 1], linestyle="--", color="tab:gray", label="calibração perfeita")
-    eixo.plot(media_prevista, freq_real, marker="o", color="tab:blue", label=f"validação ({len(freq_real)} bins por quantis)")
-    eixo.set_xlabel("escore médio previsto no bin")
-    eixo.set_ylabel("fração observada de positivos")
-    eixo.set_title(f"D6: calibração na validação (Brier {brier:.4f})")
-    eixo.legend()
-    fig.savefig(caminho, dpi=130)
-    return tabela, brier, fig
+    return tabela, brier, por_bin
 
 
 def hash_pesos(modelo: nn.Module) -> str:
