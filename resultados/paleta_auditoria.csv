@@ -1,0 +1,17 @@
+cor,hex,uso,contraste_vs_branco,minimo_exigido,passa,hex_deuteranopia,L_estrela
+incorreto,#D55E00,gráfico,3.87,3.0,True,#9E8C00,54.2
+corrigido,#0072B2,gráfico,5.19,3.0,True,#3B67B1,46.0
+positivo,#8E3B8C,gráfico,6.66,3.0,True,#4F608A,39.2
+escolhido,#007A5A,gráfico,5.34,3.0,True,#6A675C,45.2
+formula,#8F6E00,gráfico,4.77,3.0,True,#85760B,48.2
+modelo,#1A1A1A,gráfico,17.4,3.0,True,#1A1A1A,9.3
+regra_05,#404040,gráfico,10.37,3.0,True,#404040,27.1
+trivial,#8C8C8C,gráfico,3.36,3.0,True,#8C8C8C,58.3
+referencia,#767676,gráfico,4.54,3.0,True,#767676,49.6
+texto,#333333,texto,12.63,4.5,True,#333333,21.2
+texto_secundario,#595959,texto,7.0,4.5,True,#595959,37.8
+texto_incorreto,#A84300,texto,6.06,4.5,True,#796B00,41.8
+texto_positivo,#8E3B8C,texto,6.66,4.5,True,#4F608A,39.2
+texto_corrigido,#0072B2,texto,5.19,4.5,True,#3B67B1,46.0
+texto_escolhido,#007A5A,texto,5.34,4.5,True,#6A675C,45.2
+texto_formula,#8F6E00,texto,4.77,4.5,True,#85760B,48.2

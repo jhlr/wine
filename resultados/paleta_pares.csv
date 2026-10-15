@@ -1,0 +1,10 @@
+cor_a,cor_b,onde,delta_E_deuteranopia,delta_L_cinza,so_cor_basta,reforco_nao_cromatico
+incorreto,corrigido,"diferenças pareadas, mecanismo, bônus",108.4,8.2,False,preenchimento cheio × hachurado e rótulo direto
+positivo,referencia,ECDF por classe; taxa de positivos,26.9,10.4,True,traço contínuo × tracejado e rótulo direto
+trivial,regra_05,regras: revocação e custo,31.2,31.2,True,hachura no trivial e rótulo no eixo
+regra_05,escolhido,"regras, matrizes, ROC/PR, custo",17.8,18.1,False,"quadrado × círculo, traço e rótulo direto"
+trivial,escolhido,regras: revocação e custo,16.1,13.1,False,hachura no trivial e rótulo no eixo
+escolhido,formula,curva de custo (D5),46.9,3.1,False,"traço-ponto × tracejado, marcador e rótulo direto"
+regra_05,formula,curva de custo (D5),57.7,21.2,True,"pontilhado × tracejado, marcador e rótulo direto"
+modelo,referencia,"perdas treino/validação, ROC/PR, calibração",40.4,40.4,True,contínuo × tracejado e rótulo direto
+modelo,escolhido,ROC/PR: curva e regra escolhida,34.9,35.9,True,"curva × ponto, rótulo direto"
