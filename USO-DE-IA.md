@@ -11,4 +11,4 @@ Usei IA generativa neste laboratório. O trabalho foi feito por um agente de có
 Anexo: o prompt usado está em `SDD-prompt.md` (nesta mesma pasta).
 
 ## Declaração
-[preencher após revisar]
+Declaro que revisei integralmente o conteúdo deste trabalho, compreendo todas as suas partes e sou plenamente capaz de explicar e fundamentar as decisões e os resultados nele apresentados.
