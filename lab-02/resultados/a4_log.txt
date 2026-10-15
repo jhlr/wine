@@ -1,0 +1,10 @@
+Subconjunto de 65 linhas do treino, lote 64: resto 65 % 64 = 1.
+OK: 65 % 64 == 1, o último lote terá uma única observação.
+Sem correção (drop_last=False): 2 passos por época.
+Erro capturado (ValueError): Expected more than 1 value per channel when training, got input size torch.Size([1, 16])
+Tamanho do lote que falhou: 1 (lotes vistos antes dele: [64]).
+Com correção (drop_last=True, shuffle=True): 1 passo por época, 64 de 65 linhas vistas.
+Época 1: perda de treino 0.6314; linhas vistas: 64; linha descartada: id_linha=1318.
+Época 2: perda de treino 0.6286; linhas vistas: 64; linha descartada: id_linha=688.
+Época 3: perda de treino 0.6254; linhas vistas: 64; linha descartada: id_linha=567.
+Linhas descartadas nas 3 épocas: [1318, 688, 567] (mudam entre épocas: True).

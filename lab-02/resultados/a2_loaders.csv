@@ -1,0 +1,4 @@
+conjunto,batch_size,shuffle,drop_last,num_workers
+treino,64,True,False,0
+validacao,512,False,False,0
+teste,512,False,False,0
