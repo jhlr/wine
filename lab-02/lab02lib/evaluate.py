@@ -152,6 +152,6 @@ def grafico_roc_pr(
     eixo_pr.set_ylabel("precisão")
     eixo_pr.set_title("D3: curva precisão-revocação no teste")
     eixo_pr.set_ylim(0, 1.02)
-    eixo_pr.legend(loc="upper right")
+    eixo_pr.legend(loc="lower left", bbox_to_anchor=(0.0, 0.17))
     fig.savefig(caminho, dpi=130)
     return fig

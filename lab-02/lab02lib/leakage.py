@@ -29,7 +29,7 @@ FORMAS: dict[int, str] = {
 
 
 @dataclass
-class _Avaliacao:
+class Avaliacao:
     """Escores de uma execução e as métricas calculadas na avaliação interna."""
 
     acuracia: float
@@ -39,12 +39,12 @@ class _Avaliacao:
     escores: np.ndarray
 
 
-def _treinar_e_avaliar(
+def treinar_e_avaliar(
     c_treino: pd.DataFrame,
     c_avaliacao: pd.DataFrame,
     semente: int,
     estatisticas: tuple[np.ndarray, np.ndarray] | None = None,
-) -> _Avaliacao:
+) -> Avaliacao:
     """Treina 100 épocas e avalia (acurácia em 0,5 e AUC-ROC) no conjunto de avaliação interna.
 
     ``estatisticas=None`` aprende média e desvio só com ``c_treino`` (caminho
@@ -65,7 +65,7 @@ def _treinar_e_avaliar(
         treinar_epoca(modelo, loader_t, otimizador, criterio, "cpu")
     rotulos, escores = obter_escores(modelo, loader_a, "cpu")
     previsto = (escores >= 0.5).astype(int)
-    return _Avaliacao(
+    return Avaliacao(
         acuracia=float((previsto == rotulos).mean()),
         auc_roc=float(roc_auc_score(rotulos, escores)),
         acuracia_majoritaria=float(max(rotulos.mean(), 1.0 - rotulos.mean())),
@@ -74,8 +74,8 @@ def _treinar_e_avaliar(
     )
 
 
-def _registro(
-    forma: int, variante: str, semente: int, c_treino: pd.DataFrame, c_avaliacao: pd.DataFrame, ev: _Avaliacao
+def registro_execucao(
+    forma: int, variante: str, semente: int, c_treino: pd.DataFrame, c_avaliacao: pd.DataFrame, ev: Avaliacao
 ) -> dict[str, float | int | str]:
     """Linha do resultado de uma execução, com o mecanismo de perfis repetidos entre treino e avaliação."""
     no_treino = c_avaliacao["grupo_perfil"].isin(set(c_treino["grupo_perfil"])).to_numpy()
@@ -117,11 +117,11 @@ def executar_forma1(c_dev: pd.DataFrame, semente: int) -> list[dict[str, float |
     assert set(c_treino["grupo_perfil"]).isdisjoint(c_avaliacao["grupo_perfil"])
     assert not set(c_avaliacao["id_linha"]) & set(c_treino["id_linha"])
     estatisticas_todas = calcular_estatisticas(c_dev, FEATURES)  # inclui as linhas de avaliação: vazamento
-    errado = _treinar_e_avaliar(c_treino, c_avaliacao, semente, estatisticas_todas)
-    certo = _treinar_e_avaliar(c_treino, c_avaliacao, semente)
+    errado = treinar_e_avaliar(c_treino, c_avaliacao, semente, estatisticas_todas)
+    certo = treinar_e_avaliar(c_treino, c_avaliacao, semente)
     return [
-        _registro(1, "incorreto", semente, c_treino, c_avaliacao, errado),
-        _registro(1, "corrigido", semente, c_treino, c_avaliacao, certo),
+        registro_execucao(1, "incorreto", semente, c_treino, c_avaliacao, errado),
+        registro_execucao(1, "corrigido", semente, c_treino, c_avaliacao, certo),
     ]
 
 
@@ -137,11 +137,11 @@ def executar_forma4(c_dev: pd.DataFrame, semente: int) -> list[dict[str, float |
     c_treino_certo = c_treino_errado[~c_treino_errado["grupo_perfil"].isin(perfis_avaliacao)]
     assert set(c_treino_certo["grupo_perfil"]).isdisjoint(perfis_avaliacao)
     assert 0 < c_avaliacao["alvo"].sum() < len(c_avaliacao)
-    errado = _treinar_e_avaliar(c_treino_errado, c_avaliacao, semente)
-    certo = _treinar_e_avaliar(c_treino_certo, c_avaliacao, semente)
+    errado = treinar_e_avaliar(c_treino_errado, c_avaliacao, semente)
+    certo = treinar_e_avaliar(c_treino_certo, c_avaliacao, semente)
     return [
-        _registro(4, "incorreto", semente, c_treino_errado, c_avaliacao, errado),
-        _registro(4, "corrigido", semente, c_treino_certo, c_avaliacao, certo),
+        registro_execucao(4, "incorreto", semente, c_treino_errado, c_avaliacao, errado),
+        registro_execucao(4, "corrigido", semente, c_treino_certo, c_avaliacao, certo),
     ]
 
 
