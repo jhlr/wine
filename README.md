@@ -102,12 +102,12 @@ Tabela A3 (`resultados/a3_tempos.csv` e `a3_resumo.csv`; figura `resultados/a3_t
 
 | Lote | Repetição 1 (s) | Repetição 2 (s) | Repetição 3 (s) | Mediana (s) | Passos |
 |---|---|---|---|---|---|
-| 1 | 0,26041 | 0,25853 | 0,26106 | 0,26041 | 961 |
-| 8 | 0,04052 | 0,04036 | 0,04002 | 0,04036 | 121 |
-| 64 | 0,00770 | 0,00773 | 0,00765 | 0,00770 | 16 |
-| 512 | 0,00382 | 0,00335 | 0,00327 | 0,00335 | 2 |
+| 1 | 0,25850 | 0,25782 | 0,25679 | 0,25782 | 961 |
+| 8 | 0,03996 | 0,03989 | 0,03942 | 0,03989 | 121 |
+| 64 | 0,00752 | 0,00753 | 0,00752 | 0,00752 | 16 |
+| 512 | 0,00365 | 0,00327 | 0,00328 | 0,00328 | 2 |
 
-**Análise.** A mediana de uma época foi 0,2604 s com lote 1, 0,0404 s com lote 8, 0,0077 s com lote 64 e 0,0034 s com lote 512. Cada aumento de 8 vezes no lote dividiu o tempo por 6,5, 5,2 e 2,3. O ganho encolhe a cada degrau, mas **não achatou** na faixa medida: o último degrau ainda mais que dobrou a velocidade, então não aponto um ponto de retorno decrescente. O custo de **um passo** sobe com o lote: 0,271 ms, 0,334 ms, 0,481 ms e 1,676 ms. O custo por passo cresce bem menos que o lote (512 vezes mais linhas por passo, cerca de 6,2 vezes mais tempo por passo), por isso a época fica mais curta: há menos passos (961, 121, 16 e 2). Lotes diferentes também significam **quantidades diferentes de atualizações de pesos por época**: 961 com lote 1 e 2 com lote 512. Tempo por época menor não quer dizer o mesmo aprendizado por época. Ressalvas: a medição do lote 512 dura poucos milissegundos, e a primeira repetição dele (0,00382 s) ficou acima das outras duas (0,00335 s e 0,00327 s), então esse valor é o mais sensível a ruído. Os números dependem desta máquina e de torch 2.14.1.
+**Análise.** A mediana de uma época foi 0,2578 s com lote 1, 0,0399 s com lote 8, 0,0075 s com lote 64 e 0,0033 s com lote 512. Cada aumento de 8 vezes no lote dividiu o tempo por 6,5, 5,3 e 2,3. O ganho encolhe a cada degrau, mas **não achatou** na faixa medida: o último degrau ainda mais que dobrou a velocidade, então não aponto um ponto de retorno decrescente. O custo de **um passo** sobe com o lote: 0,268 ms, 0,330 ms, 0,470 ms e 1,639 ms. O custo por passo cresce bem menos que o lote (512 vezes mais linhas por passo, cerca de 6,1 vezes mais tempo por passo), por isso a época fica mais curta: há menos passos (961, 121, 16 e 2). Lotes diferentes também significam **quantidades diferentes de atualizações de pesos por época**: 961 com lote 1 e 2 com lote 512. Tempo por época menor não quer dizer o mesmo aprendizado por época. Ressalvas: a medição do lote 512 dura poucos milissegundos, e a primeira repetição dele (0,00365 s) ficou acima das outras duas (0,00327 s e 0,00328 s), então esse valor é o mais sensível a ruído. Os números dependem desta máquina e de torch 2.14.1.
 
 ## A4 — BatchNorm
 **Condição.** Subconjunto de 65 linhas só do treino (sorteio com semente), lote 64: `65 % 64 = 1`, confirmado por `assert`. Rede `criar_modelo(11, batchnorm=True)` em `train()` e `drop_last=False`. O último lote tem **1 observação**, e `BatchNorm1d` não calcula variância com uma amostra.
