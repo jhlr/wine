@@ -1,6 +1,6 @@
 # Auditoria: requisitos do ENUNCIADO.md contra a entrega
 
-Fora de `lab-02/` de propósito (não faz parte da entrega). "NB" = `lab-02/lab02.ipynb` (seção pelo título), "README" = `lab-02/README.md`, evidências em `lab-02/resultados/`. Estado: OK = atendido e conferido na execução salva; PARCIAL = atendido com ressalva descrita.
+Arquivo de apoio, não faz parte da entrega. A raiz do repositório é a pasta `lab-02/`. "NB" = `lab02.ipynb` (seção pelo título), "README" = `README.md`, evidências em `resultados/`. Estado: OK = atendido e conferido na execução salva; PARCIAL = atendido com ressalva descrita.
 
 ## Parte A
 | ID | Requisito (enunciado) | NB / README | Evidência | Estado |

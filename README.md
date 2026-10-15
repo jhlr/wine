@@ -9,13 +9,14 @@ Este relatório responde ao enunciado do Lab 2 (`ENUNCIADO.pdf`). Todos os núme
 ## Reprodução
 **Ambiente.** Python 3.11.15 (Homebrew). Bibliotecas: numpy 2.4.6, pandas 3.0.6, scikit-learn 1.9.1, matplotlib 3.11.2, torch 2.14.1, mlflow 3.17.1, jupyterlab 4.6.4, ipykernel 7.4.0, nbconvert 7.17.2. Sistema: macOS 26.6.2 (Darwin 25.6.0). Equipamento: Apple M1, 8 núcleos lógicos, 4 threads do torch, só CPU (`'cpu'`). Semente global: **42** (`apoio.fixar_semente`). Todas as dependências do `requirements.txt` instalaram com as faixas originais; acrescentei só `mlflow>=3,<4`.
 
-**Sequência de comandos** (a partir da pasta que contém `lab-02/`; o ambiente virtual fica fora de `lab-02/`):
+**Estrutura.** A raiz deste repositório é a pasta `lab-02/` da entrega (README, notebook, `USO-DE-IA.md`, `apoio.py`, `requirements.txt`, `dados/`, `resultados/`, mais o pacote `lab02lib/`).
+
+**Sequência de comandos** (a partir da raiz do repositório; o `.venv` fica no `.gitignore`):
 ```bash
 python3.11 -m venv .venv
-.venv/bin/python -m pip install -r lab-02/requirements.txt
+.venv/bin/python -m pip install -r requirements.txt
 .venv/bin/python -m ipykernel install --sys-prefix --name lab02
-cd lab-02
-PATH="../.venv/bin:$PATH" ../.venv/bin/python -m jupyter nbconvert --to notebook --execute --inplace lab02.ipynb \
+PATH=".venv/bin:$PATH" .venv/bin/python -m jupyter nbconvert --to notebook --execute --inplace lab02.ipynb \
     --ExecutePreprocessor.timeout=1800 --ExecutePreprocessor.kernel_name=lab02
 ```
 O `PATH` com o `bin` do ambiente é necessário porque `python -m jupyter nbconvert` chama o executável `jupyter-nbconvert` que estiver no `PATH`, e o do sistema usaria outro Python. A execução completa levou 39 segundos nesta máquina na última execução. O aviso "Kernel is running over TCP without encryption" vem do próprio Jupyter, não do notebook.
@@ -246,7 +247,7 @@ Arquivo: `resultados/d_curvas_roc_pr.png`. ROC com a **diagonal** aleatória de 
 O modelo apoia uma triagem: marcar amostras de vinho tinto como candidatas a uma análise especial de nota alta, com o limiar 0,2766 fixado na validação antes de abrir o teste. No teste (320 linhas, 45 positivas, 14,06%), essa regra encontrou 28 das 45 positivas (revocação 0,622), com precisão 0,491 e F1 0,549, e custou 0,3563 pontos de esforço (hipotéticos) por observação, contra 0,5344 do limiar 0,5 (revocação 0,267) e 0,7031 do classificador trivial, que acerta 85,94% e não encontra nenhuma positiva. O erro que merece atenção é o falso negativo, que pesa 5 vezes mais nos custos supostos: ficaram 17 positivas sem seleção, ao lado de 29 falsos positivos. As limitações continuam abertas. Uma base só, sem teste temporal nem de produtores novos. A mesma validação serviu para parar o treino e escolher o limiar. Há poucas positivas (33 na validação e 45 no teste), e eu não medi a incerteza da diferença entre as regras. Os custos são hipóteses; com outros custos o limiar muda. Nada disso vale para produtores, regiões ou períodos que a base não permite avaliar.
 
 ## Decisões (ambiguidades resolvidas)
-1. O ambiente virtual fica em `repo/.venv`, fora de `lab-02/`. O `nbconvert` foi chamado com o `bin` do ambiente no `PATH` (o `python -m jupyter` sozinho usava o executável do sistema).
+1. O ambiente virtual fica em `.venv` na raiz (ignorado pelo git). A raiz do repositório é a pasta `lab-02/` da entrega. O `nbconvert` foi chamado com o `bin` do ambiente no `PATH` (o `python -m jupyter` sozinho usava o executável do sistema).
 2. A3: cada repetição usa um gerador de embaralhamento com semente `42 + repetição`, igual para todos os tamanhos da mesma rodada. O aquecimento é uma época por tamanho, numa cópia descartável.
 3. Resultados extras além da lista mínima: `a1_estatisticas.csv`, `a2_loaders.csv`, `a3_resumo.csv`, `a3_hardware.json`, `b2_pares.csv`, `c_resumo.csv`, `c_tabela.csv`, `c_mecanismo_forma4.csv`, `d5_comparacao.csv`, `d5_curva_custo.png`, `d6_calibracao.csv`.
 4. `resultados/c_resultados.csv` tem uma linha por execução (forma × variante × semente) com as duas métricas em colunas, o que guarda cada valor sem perda.
