@@ -12,7 +12,7 @@ Arquivo de apoio, não faz parte da entrega. A raiz do repositório é a pasta `
 | A2 | "Meça antes de alegar que workers aceleram" | README A2: declaro que **não medi**; `num_workers=0` sem alegar ganho | n/a | PARCIAL (medição opcional não feita, sem alegação) |
 | A3 | Lotes 1, 8, 64, 512; época completa; mesmo modelo/dados/dispositivo; mesmo estado inicial e Adam novo; rede sem BatchNorm; nada descartado | NB "A3" / README A3 | `a3_tempos.csv` | OK |
 | A3 | Aquecimento fora da medição; 3 repetições; mediana, exemplos, passos | NB "A3" | `a3_tempos.csv`, `a3_resumo.csv` | OK |
-| A3 | Gráfico tempo × lote com unidades e equipamento; explicação (ganho, custo por passo, nº de atualizações), sem inventar retorno decrescente | NB "A3" (texto gerado do CSV) / README A3 | `a3_tempo_x_lote.png`, `a3_hardware.json` | OK (rep. 1 do lote 512 mais lenta; declarado) |
+| A3 | Gráfico tempo × lote com unidades e equipamento; explicação (ganho, custo por passo, nº de atualizações), sem inventar retorno decrescente | NB "A3" (figura com título gerado) / README A3 | `a3_tempo_x_lote.png`, `a3_hardware.json` | OK (repetições mais lentas descritas no README, geradas dos CSV) |
 | A4 | Subconjunto só do treino com resto 1 (65/64) confirmado numericamente | NB "A4" | `a4_log.txt` | OK |
 | A4 | BatchNorm1d em `train()`, `drop_last=False`; captura específica; mensagem original, tamanho do lote que falhou | NB "A4" | `a4_log.txt` | OK |
 | A4 | Correção com custo explicado; sem `except` genérico; subconjunto só para demonstração | NB "A4" / README A4 | `a4_log.txt` | OK |
@@ -53,6 +53,23 @@ Arquivo de apoio, não faz parte da entrega. A raiz do repositório é a pasta `
 | D8 | Parágrafo: ação, limiar, métricas e custos no teste (hipotéticos), erro que merece atenção, limitações; sem alegar fora do avaliado | README D8 | README | OK |
 | D-extra | Comparar acurácia e revocação do trivial com a rede (FAQ) | README D1/D2 e D8 | `d_tabela_final.csv` | OK |
 
+## Visualização (matéria Análise e Visualização de Dados)
+Todos os gráficos moram em `lab02lib/graficos.py` e aparecem no notebook (saída `image/png`) e em `resultados/`. Título = conclusão gerada dos dados; eixos com unidade; barras a partir de zero; rótulos diretos; sem 3D, pizza ou medidor; nada só por cor; fonte e n no rodapé.
+
+| Item | Figura | Estado |
+|---|---|---|
+| B2: taxa de positivos por partição; linhas contra 60/20/20 e perfis compartilhados | `b2_taxa_positiva.png`, `b2_particoes.png` | OK |
+| EDA só no treino: ECDF por classe das 11 características, KS calculado | `eda_ecdf_treino.png`, `eda_ks.csv` | OK (eixos x livres, justificados no rodapé) |
+| A1 normalização por conjunto | `a1_normalizacao.png` | OK |
+| A3 tempo × lote (log-log, custo por passo, equipamento) | `a3_tempo_x_lote.png` | OK |
+| A4 lotes e linha descartada por época | `a4_batchnorm.png` | OK |
+| C formas 1 e 4 e bônus: diferenças pareadas por semente; mecanismo | `c_diferencas.png`, `c_mecanismo_forma4.png`, `bonus_diferencas.png`, `bonus_mecanismo.png` | OK |
+| D7 curvas com melhor época, parada e prova de restauração | `d7_curvas_perda.png` | OK |
+| D4 matriz de custos e limiar da fórmula; D5 custo por limiar; D6 calibração | `d4_matriz_custos.png`, `d5_curva_custo.png`, `d6_calibracao.png` | OK |
+| D2 matrizes e três regras; D3 ROC (diagonal) e PR (prevalência do teste) | `d2_matrizes.png`, `d2_regras.png`, `d_curvas_roc_pr.png` | OK |
+| Paleta: contraste WCAG, deuteranopia (Machado), ΔE e ΔL calculados | `paleta_auditoria.csv`, `paleta_pares.csv`, README "Gráficos" | OK (todas as cores passam; pares com ΔE ou ΔL baixos têm reforço por hachura, traço, marcador ou rótulo) |
+| Diagramas Mermaid (pipeline, quem vê o quê, B2, parada, A4, vazamento, congelamento) | NB e README, 7 blocos iguais | OK (os 7 renderizam com `@mermaid-js/mermaid-cli`) |
+
 ## Checklist da seção 9 e penalidades
 | Item | Estado | Evidência |
 |---|---|---|
@@ -71,4 +88,5 @@ Arquivo de apoio, não faz parte da entrega. A raiz do repositório é a pasta `
 1. Na A1 a verificação de formas percorre o carregador de teste (só características e rótulos, sem modelo); nenhum escore ou métrica do teste existe antes da D1.
 2. O efeito do bônus na AUC-ROC foi nulo e de sinal misto (reportado assim); a acurácia entre as variantes do bônus não é comparável (prevalências diferentes).
 3. A diferença da forma 4 mistura o fim do vazamento com um treino menor.
-4. Os tempos da A3 mudam de uma execução para outra; todos os demais números se repetiram.
+4. Os tempos da A3 mudam de uma execução para outra (e o README é regerado dessas tabelas); todos os demais números se repetiram.
+5. Os gráficos foram inspecionados um a um nos PNG; limitações visuais conhecidas: no diagrama de calibração os bins 1 e 2 ficam sobrepostos perto da origem (a numeração e a tabela de n resolvem), e nas diferenças pareadas da forma 1 os pontos de acurácia coincidem em zero (o deslocamento vertical por semente os mantém visíveis).
