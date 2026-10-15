@@ -4,9 +4,11 @@ from __future__ import annotations
 import copy
 import inspect
 from dataclasses import dataclass
+from pathlib import Path
 
 import pandas as pd
 import torch
+from matplotlib.figure import Figure
 from torch import Tensor, nn
 from torch.utils.data import DataLoader
 
@@ -111,3 +113,20 @@ def verificar_restauracao(
     diferenca = abs(recalculada - resultado.melhor_perda)
     assert diferenca < 1e-6, f"perda de validação recalculada difere em {diferenca}"
     return {"tensores_iguais": iguais, "perda_recalculada": recalculada, "diferenca_absoluta": diferenca}
+
+
+def grafico_perdas(resultado: ResultadoTreino, caminho: Path) -> Figure:
+    """Curvas de perda de treino e de validação, com a melhor época e a época de parada marcadas."""
+    h = resultado.historico
+    fig = Figure(figsize=(8, 4.5), constrained_layout=True)
+    eixo = fig.subplots()
+    eixo.plot(h["epoca"], h["perda_treino"], label="treino", color="tab:blue")
+    eixo.plot(h["epoca"], h["perda_validacao"], label="validação", color="tab:orange")
+    eixo.axvline(resultado.melhor_epoca, color="tab:green", linestyle="--", label=f"melhor época ({resultado.melhor_epoca})")
+    eixo.axvline(resultado.epoca_parada, color="tab:red", linestyle=":", label=f"época de parada ({resultado.epoca_parada})")
+    eixo.set_xlabel("época")
+    eixo.set_ylabel("perda BCE média")
+    eixo.set_title(f"D7: curvas de perda (parada por {resultado.motivo})")
+    eixo.legend()
+    fig.savefig(caminho, dpi=130)
+    return fig

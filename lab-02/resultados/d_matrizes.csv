@@ -1,0 +1,13 @@
+regra,real,previsto,contagem
+Trivial do treino,0,0,275
+Trivial do treino,0,1,0
+Trivial do treino,1,0,45
+Trivial do treino,1,1,0
+Rede: padrão,0,0,269
+Rede: padrão,0,1,6
+Rede: padrão,1,0,33
+Rede: padrão,1,1,12
+Rede: escolhido na validação,0,0,246
+Rede: escolhido na validação,0,1,29
+Rede: escolhido na validação,1,0,17
+Rede: escolhido na validação,1,1,28

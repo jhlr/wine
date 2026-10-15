@@ -1,0 +1,50 @@
+{
+  "limiar": 0.2766464352607727,
+  "regra_empate": "entre limiares de custo mínimo igual, o mais próximo de 0,5; se ainda empatar, o menor. Positivo se escore >= limiar.",
+  "C_FP": 1,
+  "C_FN": 5,
+  "unidade_custo": "pontos de esforço (hipotéticos)",
+  "caracteristicas": [
+    "fixed acidity",
+    "volatile acidity",
+    "citric acid",
+    "residual sugar",
+    "chlorides",
+    "free sulfur dioxide",
+    "total sulfur dioxide",
+    "density",
+    "pH",
+    "sulphates",
+    "alcohol"
+  ],
+  "normalizacao_media_treino": [
+    8.295733451843262,
+    0.5224037170410156,
+    0.2706867754459381,
+    2.5430800914764404,
+    0.08767325431108475,
+    15.454734802246094,
+    45.752342224121094,
+    0.9966778755187988,
+    3.30906343460083,
+    0.6606139540672302,
+    10.432032585144043
+  ],
+  "normalizacao_desvio_treino_ddof0": [
+    1.7030097246170044,
+    0.18085356056690216,
+    0.19176149368286133,
+    1.4018741846084595,
+    0.04744495078921318,
+    10.174148559570312,
+    32.87118148803711,
+    0.0018672607839107513,
+    0.1494414061307907,
+    0.16799093782901764,
+    1.0811622142791748
+  ],
+  "arquitetura": "Sequential(\n  (0): Linear(in_features=11, out_features=16, bias=True)\n  (1): ReLU()\n  (2): Linear(in_features=16, out_features=1, bias=True)\n  (3): _AchatarSaida()\n)",
+  "melhor_epoca": 49,
+  "sha256_pesos_restaurados": "bfc098ee58b67c8d6a1ea9eb7c19f26dd75a221023422ba9e2073bdf285b58f7",
+  "semente": 42
+}
