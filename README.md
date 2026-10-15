@@ -2,7 +2,7 @@
 
 Nome: João Rietra  
 Turma: BD-P4-2026.2  
-Link do repositório: [preencher]
+Link do repositório: https://github.com/jhlr/wine
 
 Este relatório responde ao enunciado do Lab 2 (`ENUNCIADO.pdf`). Todos os números vêm de arquivos de `resultados/`, gerados pela execução do `lab02.ipynb`. Quando um resultado foi pequeno ou desfavorável, eu escrevo isso do jeito que saiu. Os gráficos (seção "Gráficos") trazem a conclusão no título, gerada dos dados.
 
